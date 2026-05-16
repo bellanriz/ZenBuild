@@ -48,6 +48,7 @@ interface Member {
   type: 'MENTOR' | 'PARTNER' | 'SERVICE_PROVIDER' | 'COMPANY' | 'PROGRAMME';
   role?: string;
   expertise?: string[];
+  values?: string[];
   bio?: string;
   avatar?: string;
   status?: string;
@@ -57,6 +58,12 @@ interface Member {
   strength?: number;
   activeWork?: ActiveWork[];
   score?: number;
+  compliance?: {
+    ssm: 'VERIFIED' | 'PENDING' | 'EXPIRED';
+    bnm: 'CLEARED' | 'UNDER_REVIEW' | 'FLAGGED';
+    lhdn: 'ACTIVE' | 'AUDIT' | 'LATE';
+    lastAuditDate: string;
+  };
 }
 
 interface Proposal {
@@ -484,8 +491,8 @@ export default function App() {
                   <SectionHeader title="Programmes" icon={<Layers size={20}/>} subtitle="Active and upcoming initiatives" />
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {ecosystem.programs.map((p) => (
-                      <Card key={p.id} className="rounded-2xl border-[#141414]/5 shadow-sm overflow-hidden">
-                        <div className="p-6">
+                      <Card key={p.id} className="rounded-2xl border-[#141414]/5 shadow-sm overflow-hidden flex flex-col h-full">
+                        <div className="p-6 flex flex-col flex-1">
                           <div className="flex justify-between items-start mb-4">
                             <Badge className={`${p.status === 'ONGOING' ? 'bg-green-100 text-green-700' : p.status === 'REGISTERING' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'} border-none px-3 py-1 font-mono text-[10px]`}>
                               {p.status}
@@ -493,10 +500,12 @@ export default function App() {
                             <Clock size={16} className="opacity-20" />
                           </div>
                           <h3 className="text-xl font-medium mb-2">{p.name}</h3>
-                          <p className="text-sm text-[#141414]/50 mb-6 leading-relaxed">{p.description || 'Verified programme track.'}</p>
-                          <Button variant="outline" className="w-full rounded-xl border-[#141414]/10 text-xs font-mono uppercase tracking-widest text-[#141414]">
-                            {p.status === 'REGISTERING' ? 'Apply Now' : 'View Cohort'}
-                          </Button>
+                          <p className="text-sm text-[#141414]/50 mb-6 leading-relaxed flex-1">{p.description || 'Verified programme track.'}</p>
+                          <div className="mt-auto">
+                            <Button variant="outline" className="w-full rounded-xl border-[#141414]/10 text-xs font-mono uppercase tracking-widest text-[#141414]">
+                              {p.status === 'REGISTERING' ? 'Apply Now' : 'View Cohort'}
+                            </Button>
+                          </div>
                         </div>
                       </Card>
                     ))}
@@ -553,38 +562,70 @@ export default function App() {
 
               <Card className="rounded-3xl border-[#141414]/5 bg-white p-8 shadow-sm">
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-xl font-medium">Linkage Governance Table</h3>
-                  <Button variant="outline" size="sm" className="rounded-lg text-[#141414]">Export Report</Button>
+                  <h3 className="text-xl font-medium">Company Ecosystem Tracker</h3>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" className="rounded-lg text-[#141414] text-[10px] font-mono h-8">DOWNLOAD TAX REPORTS</Button>
+                    <Button variant="outline" size="sm" className="rounded-lg text-[#141414] text-[10px] font-mono h-8">AUDIT ALL</Button>
+                  </div>
                 </div>
-                <div className="space-y-6">
-                   {ecosystem.linkages.map((link: any) => {
-                      const mentor = ecosystem.mentors.find((m: any) => m.id === link.source);
-                      const company = ecosystem.companies.find((c: any) => c.id === link.target);
-                      return (
-                        <div key={link.id} className="flex items-center justify-between border-b border-[#141414]/5 pb-6 last:border-none">
-                           <div className="flex gap-4 items-center">
-                              <div className="flex -space-x-3">
-                                 <Avatar className="w-10 h-10 border-2 border-white"><AvatarImage src={mentor?.avatar}/></Avatar>
-                                 <Avatar className="w-10 h-10 border-2 border-white bg-[#F5F5F0] flex items-center justify-center text-[10px] font-bold"><Building2 size={16} /></Avatar>
-                              </div>
-                              <div>
-                                 <p className="font-medium text-sm">{mentor?.name} ↔ {company?.name}</p>
-                                 <p className="text-[10px] font-mono text-[#141414]/30 uppercase tracking-widest">{link.type}</p>
-                              </div>
-                           </div>
-                           <div className="flex items-center gap-8">
-                              <div className="text-right">
-                                 <p className="text-xs font-mono">{link.strength}% Strength</p>
-                                 <div className="w-24 h-1 bg-gray-100 rounded-full mt-1">
-                                    <div className="h-full bg-[#141414] rounded-full" style={{ width: `${link.strength}%` }} />
-                                 </div>
-                              </div>
-                              <Badge className="bg-[#141414] text-white rounded-lg px-2 text-[8px] tracking-widest uppercase">{link.status}</Badge>
-                              <Button variant="ghost" size="icon" className="text-[#141414]/20"><ChevronRight size={16}/></Button>
-                           </div>
-                        </div>
-                      )
-                   })}
+                <div className="space-y-4">
+                   <div className="grid grid-cols-[1fr_120px_150px_100px_40px] gap-4 px-4 py-2 bg-[#F8F9FA] rounded-xl text-[9px] font-mono uppercase tracking-[0.2em] opacity-40">
+                      <span>Company Entity</span>
+                      <span>Ecosystem Score</span>
+                      <span className="text-center">Compliance Status</span>
+                      <span>Audit Date</span>
+                      <span></span>
+                   </div>
+                   {ecosystem.companies.map((company) => (
+                      <div key={company.id} className="grid grid-cols-[1fr_120px_150px_100px_40px] gap-4 items-center px-4 py-6 border-b border-[#141414]/5 last:border-none hover:bg-[#F8F9FA]/50 transition-all rounded-2xl group">
+                         <div className="flex items-center gap-4">
+                            <Avatar className="w-10 h-10 rounded-xl">
+                               <AvatarImage src={`https://api.dicebear.com/7.x/identicon/svg?seed=${company.id}`} />
+                            </Avatar>
+                            <div>
+                               <p className="font-medium text-sm">{company.name}</p>
+                               <div className="flex items-center gap-1.5 mt-0.5">
+                                  <span className="text-[9px] font-mono opacity-40">{company.industry}</span>
+                                  <span className="text-[9px] font-mono opacity-20">•</span>
+                                  <span className="text-[9px] font-mono opacity-40">{company.stage}</span>
+                               </div>
+                            </div>
+                         </div>
+
+                         <div>
+                            <div className="flex items-center gap-3">
+                               <div className="flex-1 h-1.5 bg-[#141414]/5 rounded-full overflow-hidden">
+                                  <motion.div 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${company.score || 0}%` }}
+                                    className="h-full bg-[#141414]" 
+                                  />
+                               </div>
+                               <span className="text-xs font-mono font-bold">{(company.score || 0)}%</span>
+                            </div>
+                         </div>
+
+                         <div className="flex justify-center gap-1.5">
+                            {company.compliance && (
+                               <>
+                                  <Badge variant="outline" className={`text-[8px] px-1.5 py-0 rounded-sm border-none ${company.compliance.ssm === 'VERIFIED' ? 'bg-green-50 text-green-600' : 'bg-yellow-50 text-yellow-600'}`}>SSM</Badge>
+                                  <Badge variant="outline" className={`text-[8px] px-1.5 py-0 rounded-sm border-none ${company.compliance.bnm === 'CLEARED' ? 'bg-blue-50 text-blue-600' : 'bg-orange-50 text-orange-600'}`}>BNM</Badge>
+                                  <Badge variant="outline" className={`text-[8px] px-1.5 py-0 rounded-sm border-none ${company.compliance.lhdn === 'ACTIVE' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>LHDN</Badge>
+                               </>
+                            )}
+                         </div>
+
+                         <div className="text-right">
+                            <p className="text-[10px] font-mono opacity-40">{company.compliance?.lastAuditDate || 'N/A'}</p>
+                         </div>
+
+                         <div className="flex justify-end">
+                            <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg text-[#141414]/20 group-hover:text-[#141414] group-hover:bg-white shadow-sm transition-all">
+                               <ChevronRight size={14} />
+                            </Button>
+                         </div>
+                      </div>
+                   ))}
                 </div>
               </Card>
             </motion.div>
@@ -614,46 +655,7 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                  {filteredMembers.map(member => (
-                   <Card key={member.id} className="rounded-3xl border-[#141414]/5 bg-white shadow-sm hover:shadow-md transition-all overflow-hidden group">
-                      <div className="p-6">
-                        <div className="flex justify-between items-start mb-6">
-                           <Avatar className="w-14 h-14 rounded-2xl">
-                              <AvatarImage src={member.avatar || `https://api.dicebear.com/7.x/identicon/svg?seed=${member.id}`} />
-                           </Avatar>
-                           <div className="flex flex-col items-end gap-2">
-                             <Badge variant="outline" className={`text-[9px] font-mono tracking-widest uppercase px-2 py-0.5 rounded-md ${
-                                member.type === 'MENTOR' ? 'text-purple-600 border-purple-100 bg-purple-50' :
-                                member.type === 'PARTNER' ? 'text-blue-600 border-blue-100 bg-blue-50' :
-                                member.type === 'SERVICE_PROVIDER' ? 'text-orange-600 border-orange-100 bg-orange-50' :
-                                'text-emerald-600 border-emerald-100 bg-emerald-50'
-                             }`}>
-                                {member.type.replace('_', ' ')}
-                             </Badge>
-                             {member.score !== undefined && (
-                               <div className="flex items-center gap-1.5">
-                                 <div className="w-12 h-1 bg-[#141414]/5 rounded-full overflow-hidden">
-                                   <div 
-                                     className="h-full bg-[#141414]" 
-                                     style={{ width: `${member.score}%` }}
-                                   />
-                                 </div>
-                                 <span className="text-[9px] font-mono font-bold">{member.score}%</span>
-                               </div>
-                             )}
-                           </div>
-                        </div>
-                        <h3 className="text-lg font-medium mb-1">{member.name}</h3>
-                        <p className="text-xs text-[#141414]/40 uppercase tracking-widest font-mono mb-4">{member.role || member.stage || 'Strategic Member'}</p>
-                        <p className="text-sm text-[#141414]/60 line-clamp-2 leading-relaxed mb-6">
-                           {member.bio || member.description || `Verified ecosystem member since 2025 focusing on ${member.industry || 'innovation'}.`}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                           {(member.expertise || []).slice(0, 3).map(skill => (
-                             <span key={skill} className="text-[10px] text-[#141414]/40 border-b border-[#141414]/5 pb-0.5">{skill}</span>
-                           ))}
-                        </div>
-                      </div>
-                   </Card>
+                   <FlippableMemberCard key={member.id} member={member} />
                  ))}
               </div>
             </motion.div>
@@ -803,6 +805,143 @@ function DiscoveryItem({ item }: { item: Member; key?: React.Key }) {
           <ChevronRight size={16} className="text-[#141414]/10 group-hover:text-[#141414] transition-colors" />
        </div>
     </Card>
+  );
+}
+
+function FlippableMemberCard({ member }: { member: Member; key?: React.Key }) {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <div 
+      className="relative w-full h-[400px] perspective-1000 group cursor-pointer"
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
+      onClick={() => setIsFlipped(!isFlipped)}
+    >
+      <motion.div
+        className="w-full h-full relative preserve-3d"
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6, type: "spring", stiffness: 260, damping: 20 }}
+      >
+        {/* Front Face */}
+        <div className="absolute inset-0 backface-hidden">
+          <Card className="w-full h-full rounded-3xl border-[#141414]/5 bg-white shadow-sm flex flex-col">
+            <div className="p-6 flex flex-col h-full">
+              <div className="flex justify-between items-start mb-6">
+                <Avatar className="w-14 h-14 rounded-2xl">
+                  <AvatarImage src={member.avatar || `https://api.dicebear.com/7.x/identicon/svg?seed=${member.id}`} />
+                </Avatar>
+                <div className="flex flex-col items-end gap-2">
+                  <Badge variant="outline" className={`text-[9px] font-mono tracking-widest uppercase px-2 py-0.5 rounded-md ${
+                    member.type === 'MENTOR' ? 'text-purple-600 border-purple-100 bg-purple-50' :
+                    member.type === 'PARTNER' ? 'text-blue-600 border-blue-100 bg-blue-50' :
+                    member.type === 'SERVICE_PROVIDER' ? 'text-orange-600 border-orange-100 bg-orange-50' :
+                    'text-emerald-600 border-emerald-100 bg-emerald-50'
+                  }`}>
+                    {member.type.replace('_', ' ')}
+                  </Badge>
+                  {member.score !== undefined && (
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-12 h-1 bg-[#141414]/5 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-[#141414]" 
+                          style={{ width: `${member.score}%` }}
+                        />
+                      </div>
+                      <span className="text-[9px] font-mono font-bold">{member.score}%</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <h3 className="text-xl font-medium mb-1">{member.name}</h3>
+              <p className="text-xs text-[#141414]/40 uppercase tracking-widest font-mono mb-4">{member.role || member.stage || 'Strategic Member'}</p>
+              <p className="text-sm text-[#141414]/60 line-clamp-3 leading-relaxed mb-6">
+                {member.bio || member.description || `Verified ecosystem member since 2025 focusing on ${member.industry || 'innovation'}.`}
+              </p>
+              <div className="mt-auto">
+                <div className="flex flex-wrap gap-2">
+                  {(member.expertise || []).slice(0, 3).map(skill => (
+                    <span key={skill} className="text-[10px] text-[#141414]/40 border-b border-[#141414]/5 pb-0.5">{skill}</span>
+                  ))}
+                </div>
+                <p className="text-[9px] font-mono uppercase tracking-widest text-[#141414]/20 mt-4 text-center">Tap to flip</p>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* Back Face */}
+        <div className="absolute inset-0 backface-hidden rotate-y-180">
+          <Card className="w-full h-full rounded-3xl border-[#141414]/10 bg-[#141414] text-white p-6 flex flex-col shadow-2xl">
+            <div className="flex flex-col h-full">
+              <h3 className="text-xl font-medium mb-1">{member.name}</h3>
+              <p className="text-[10px] font-mono uppercase tracking-[0.2em] opacity-40 mb-8">Ecosystem Value Stack</p>
+              
+              <div className="space-y-6 flex-1">
+                {member.values && member.values.length > 0 && (
+                  <div>
+                    <h4 className="text-[9px] font-mono uppercase tracking-widest opacity-30 mb-3">Core Values</h4>
+                    <div className="space-y-2">
+                       {member.values.map(val => (
+                         <div key={val} className="flex items-center gap-2">
+                            <CheckCircle2 size={12} className="text-green-400" />
+                            <span className="text-xs tracking-tight">{val}</span>
+                         </div>
+                       ))}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <h4 className="text-[9px] font-mono uppercase tracking-widest opacity-30 mb-3">Extended Expertise</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {member.expertise?.map(skill => (
+                      <Badge key={skill} variant="outline" className="bg-white/5 border-white/10 text-white text-[9px] font-normal rounded-lg">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {member.compliance && (
+                  <div className="pt-4 border-t border-white/5">
+                    <h4 className="text-[9px] font-mono uppercase tracking-widest opacity-30 mb-3">Regulatory Compliance (Admin View)</h4>
+                    <div className="grid grid-cols-3 gap-2">
+                       <div className="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center">
+                          <span className="text-[8px] font-mono opacity-40 mb-1">SSM</span>
+                          <span className={`text-[9px] font-bold ${member.compliance.ssm === 'VERIFIED' ? 'text-green-400' : 'text-yellow-400'}`}>{member.compliance.ssm}</span>
+                       </div>
+                       <div className="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center">
+                          <span className="text-[8px] font-mono opacity-40 mb-1">BNM</span>
+                          <span className={`text-[9px] font-bold ${member.compliance.bnm === 'CLEARED' ? 'text-green-400' : 'text-orange-400'}`}>{member.compliance.bnm}</span>
+                       </div>
+                       <div className="p-2 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center">
+                          <span className="text-[8px] font-mono opacity-40 mb-1">LHDN</span>
+                          <span className={`text-[9px] font-bold ${member.compliance.lhdn === 'ACTIVE' ? 'text-green-400' : 'text-red-400'}`}>{member.compliance.lhdn}</span>
+                       </div>
+                    </div>
+                    <p className="text-[8px] font-mono opacity-20 mt-2 text-right">LAST AUDIT: {member.compliance.lastAuditDate}</p>
+                  </div>
+                )}
+
+                {member.industry && (
+                   <div>
+                      <h4 className="text-[9px] font-mono uppercase tracking-widest opacity-30 mb-2">Primary Domain</h4>
+                      <p className="text-sm font-medium">{member.industry}</p>
+                   </div>
+                )}
+              </div>
+
+              <div className="mt-auto pt-6 border-t border-white/10">
+                <Button className="w-full bg-white text-[#141414] rounded-xl text-xs font-mono uppercase tracking-widest h-10 hover:bg-gray-200">
+                  Request Connection
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </motion.div>
+    </div>
   );
 }
 

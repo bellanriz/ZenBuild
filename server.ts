@@ -26,8 +26,9 @@ async function startServer() {
     {
       id: "m1",
       name: "Alex River",
-      role: "Senior Frontend Architect",
+      role: "Senior Software Engineer",
       expertise: ["React", "TypeScript", "Tailwind"],
+      values: ["Quality Code", "Mentorship", "Scalability"],
       bio: "10+ years experience building scalable web applications. Specialist in UI architecture.",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
       currentLoad: 2,
@@ -38,8 +39,9 @@ async function startServer() {
     {
       id: "m2",
       name: "Sarah Chen",
-      role: "Full Stack Engineer",
-      expertise: ["Node.js", "Python", "System Design"],
+      role: "AI ENGINEER",
+      expertise: ["Node.js", "Python", "LLMs", "PyTorch"],
+      values: ["Innovation", "Ethics", "Efficiency"],
       bio: "Passionate about backend architecture and AI integration.",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
       currentLoad: 4,
@@ -50,26 +52,181 @@ async function startServer() {
     {
       id: "m3",
       name: "Marcus Thorne",
-      role: "UX/UI Designer & Dev",
-      expertise: ["Framer Motion", "Design Systems", "WebGPU"],
+      role: "Solutions Architect",
+      expertise: ["Cloud Native", "Design Systems", "WebGPU"],
+      values: ["Precision", "Aesthetics", "Performance"],
       bio: "Bridging the gap between beautiful design and efficient code.",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus",
       currentLoad: 1,
       maxLoad: 3,
       type: "MENTOR",
       score: 65
+    },
+    {
+      id: "m4",
+      name: "Elena Vance",
+      role: "CLOUD ENGINEER",
+      expertise: ["AWS", "Kubernetes", "DevOps"],
+      values: ["Uptime", "Security", "Automation"],
+      bio: "Infrastructure specialist focusing on high-availability systems.",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elena",
+      currentLoad: 0,
+      maxLoad: 4,
+      type: "MENTOR",
+      score: 88
+    },
+    {
+      id: "m5",
+      name: "David Park",
+      role: "Marketing Manager",
+      expertise: ["GTM Strategy", "Growth Hacking", "Branding"],
+      values: ["Storytelling", "Data-Driven", "Empathy"],
+      bio: "Helping startups find their voice and scale their user base.",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+      currentLoad: 2,
+      maxLoad: 6,
+      type: "MENTOR",
+      score: 91
     }
   ];
 
   const companies = [
-    { id: "c1", name: "ZenPay Global", stage: "Series A", industry: "Fintech", needs: ["React", "Security"], type: "COMPANY", score: 88 },
-    { id: "c2", name: "BioTrack", stage: "Seed", industry: "HealthTech", needs: ["System Design", "Node.js"], type: "COMPANY", score: 74 },
-    { id: "c3", name: "CloudCraft", stage: "Pre-seed", industry: "DevTools", needs: ["UX", "Branding"], type: "COMPANY", score: 38 }
+    { 
+      id: "c1", 
+      name: "ZenPay Global", 
+      stage: "Series A", 
+      industry: "Fintech", 
+      needs: ["React", "Security"], 
+      type: "COMPANY", 
+      score: 88,
+      values: ["Transparency", "Speed", "Compliance"]
+    },
+    { 
+      id: "c2", 
+      name: "BioTrack", 
+      stage: "Seed", 
+      industry: "HealthTech", 
+      needs: ["System Design", "Node.js"], 
+      type: "COMPANY", 
+      score: 74,
+      values: ["Scientific Integrity", "Privacy", "Accessibility"]
+    },
+    { 
+      id: "c3", 
+      name: "CloudCraft", 
+      stage: "Pre-seed", 
+      industry: "DevTools", 
+      needs: ["UX", "Branding"], 
+      type: "COMPANY", 
+      score: 38,
+      values: ["Developer Experience", "Open Source", "Design"]
+    },
+    { 
+      id: "c4", 
+      name: "Grab Holdings", 
+      stage: "Public", 
+      industry: "Super-app", 
+      needs: ["AI Ethics", "Logistics Optimization"], 
+      type: "COMPANY", 
+      score: 98,
+      values: ["Heart", "Hunger", "Humour"],
+      bio: "Southeast Asia's leading super-app providing everyday services.",
+      compliance: {
+        ssm: "VERIFIED",
+        bnm: "CLEARED",
+        lhdn: "ACTIVE",
+        lastAuditDate: "2026-01-15"
+      }
+    },
+    { 
+      id: "c5", 
+      name: "Carsome", 
+      stage: "Unicorn", 
+      industry: "Automotive", 
+      needs: ["Computer Vision", "Pricing Engines"], 
+      type: "COMPANY", 
+      score: 92,
+      values: ["Trust", "Efficiency", "Customer-First"],
+      bio: "Southeast Asia's largest integrated car e-commerce platform.",
+      compliance: {
+        ssm: "VERIFIED",
+        bnm: "CLEARED",
+        lhdn: "ACTIVE",
+        lastAuditDate: "2026-03-22"
+      }
+    },
+    { 
+      id: "c6", 
+      name: "Aerodyne Group", 
+      stage: "Series B", 
+      industry: "Drone Tech", 
+      needs: ["Edge AI", "Data Analytics"], 
+      type: "COMPANY", 
+      score: 95,
+      values: ["Innovation", "Safety", "Precision"],
+      bio: "Global leader in drone-based enterprise solutions.",
+      compliance: {
+        ssm: "VERIFIED",
+        bnm: "UNDER_REVIEW",
+        lhdn: "ACTIVE",
+        lastAuditDate: "2026-04-10"
+      }
+    },
+    { 
+      id: "c7", 
+      name: "StoreHub", 
+      stage: "Series B", 
+      industry: "SaaS / Retail", 
+      needs: ["Growth Strategy", "Internationalization"], 
+      type: "COMPANY", 
+      score: 89,
+      values: ["Merchant Success", "Automation", "Reliability"],
+      bio: "Enabling retailers to automate and grow their businesses.",
+      compliance: {
+        ssm: "VERIFIED",
+        bnm: "CLEARED",
+        lhdn: "LATE",
+        lastAuditDate: "2025-12-05"
+      }
+    },
+    { 
+      id: "c8", 
+      name: "Dropee", 
+      stage: "Series A", 
+      industry: "B2B Marketplace", 
+      needs: ["Supply Chain AI", "Fintech Integration"], 
+      type: "COMPANY", 
+      score: 84,
+      values: ["B2B Empowerment", "Data Transparency", "Service Excellence"],
+      bio: "B2B e-commerce marketplace for independent retailers.",
+      compliance: {
+        ssm: "PENDING",
+        bnm: "CLEARED",
+        lhdn: "ACTIVE",
+        lastAuditDate: "2026-02-28"
+      }
+    }
   ];
 
   const partners = [
-    { id: "p_1", name: "AWS Startups", type: "PARTNER", expertise: ["Cloud Credits", "Architecture Redviews"], bio: "Providing cloud resources for early stage teams.", score: 99 },
-    { id: "p_2", name: "Google for Startups", type: "PARTNER", expertise: ["AI Mastery", "Scaling"], bio: "Accelerating ecosystems through technology.", score: 96 }
+    { 
+      id: "p_1", 
+      name: "AWS Startups", 
+      type: "PARTNER", 
+      expertise: ["Cloud Credits", "Architecture Redviews"], 
+      bio: "Providing cloud resources for early stage teams.", 
+      score: 99,
+      values: ["Scalability", "Security", "Availability"]
+    },
+    { 
+      id: "p_2", 
+      name: "Google for Startups", 
+      type: "PARTNER", 
+      expertise: ["AI Mastery", "Scaling"], 
+      bio: "Accelerating ecosystems through technology.", 
+      score: 96,
+      values: ["Innovation", "Open Cloud", "Impact"]
+    }
   ];
 
   const serviceProviders = [
@@ -84,7 +241,8 @@ async function startServer() {
         { client: "BioTrack", task: "Patent Filing", status: "25%" }
       ],
       status: "ACTIVE",
-      score: 85
+      score: 85,
+      values: ["integrity", "Precision", "Confidentiality"]
     },
     { 
       id: "sp_2", 
@@ -96,7 +254,8 @@ async function startServer() {
         { client: "CloudCraft", task: "Rebranding Phase 1", status: "COMPLETE" }
       ],
       status: "ACTIVE",
-      score: 92
+      score: 92,
+      values: ["Aesthetics", "User-Centricity", "Quality"]
     },
     {
       id: "sp_3",
@@ -106,7 +265,8 @@ async function startServer() {
       bio: "Enterprise-grade security audits.",
       activeWork: [],
       status: "IDLE",
-      score: 48
+      score: 48,
+      values: ["Safety", "Vigilance", "Resilience"]
     }
   ];
 

@@ -9,7 +9,8 @@ import {
   Heart, 
   X, 
   Send, 
-  ChevronRight, 
+  ChevronRight,
+  ChevronLeft,
   ExternalLink,
   ArrowLeft,
   Activity,
@@ -431,8 +432,8 @@ export default function App() {
              </div>
           </div>
           
-          <h2 className="text-4xl font-bold tracking-tight mb-4 text-brand-yellow">Synthesizing Audit Data</h2>
-          <p className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase mb-12">Ecosystem Analysis in Progress</p>
+          <h2 className="text-4xl font-bold tracking-tight mb-4 text-brand-yellow">{activeAuditType === 'Mentor Performance' ? 'Synthesizing Mentor Analysis' : 'Synthesizing Audit Data'}</h2>
+          <p className="text-white/40 font-mono text-[10px] tracking-[0.3em] uppercase mb-12">{activeAuditType === 'Mentor Performance' ? 'Mentor Performance Analysis in Progress' : 'Ecosystem Analysis in Progress'}</p>
           
           <div className="space-y-6">
             <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
@@ -442,7 +443,10 @@ export default function App() {
                />
             </div>
             <div className="flex justify-between text-[11px] font-bold uppercase tracking-widest text-brand-yellow/60">
-               <span>{auditProgress < 30 ? 'SSM INDEXING' : auditProgress < 60 ? 'BNM FORENSICS' : auditProgress < 90 ? 'LHDN RECONCILIATION' : 'FINALIZING REPORT'}</span>
+               <span>{activeAuditType === 'Mentor Performance' 
+                 ? (auditProgress < 30 ? 'GATHERING MENTOR DATA' : auditProgress < 60 ? 'ANALYZING PERFORMANCE' : auditProgress < 90 ? 'SCORING IMPACT' : 'FINALIZING ANALYSIS')
+                 : (auditProgress < 30 ? 'SSM INDEXING' : auditProgress < 60 ? 'BNM FORENSICS' : auditProgress < 90 ? 'LHDN RECONCILIATION' : 'FINALIZING REPORT')
+               }</span>
                <span className="text-brand-yellow">{auditProgress}%</span>
             </div>
           </div>
@@ -681,7 +685,7 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-brand-bg text-[#1A1A1A] font-sans selection:bg-[#E9ECEF]">
+    <div className="min-h-screen bg-brand-bg text-[#1A1A1A] font-sans selection:bg-[#E9ECEF] overflow-y-auto">
       {/* Sidebar Navigation */}
       <nav className="fixed left-0 top-0 h-screen w-24 flex flex-col items-center py-10 bg-white/40 backdrop-blur-xl border-r border-[#141414]/5 z-50">
         <div className="mb-14 cursor-pointer group" onClick={() => setRole('NONE')}>
@@ -694,7 +698,7 @@ export default function App() {
           {role === 'ADMIN' && (
             <>
               <NavItem icon={<Sparkles size={24} />} active={activeScreen === 'PROPOSAL_BUILDER'} onClick={() => setActiveScreen('PROPOSAL_BUILDER')} label="Cohorts" />
-              <NavItem icon={<Wrench size={24} />} active={activeScreen === 'SP_ACTIVITY'} onClick={() => setActiveScreen('SP_ACTIVITY')} label="Activity" />
+              <NavItem icon={<Activity size={24} />} active={activeScreen === 'SP_ACTIVITY'} onClick={() => setActiveScreen('SP_ACTIVITY')} label="Activity" />
               <NavItem icon={<BarChart3 size={24} />} active={activeScreen === 'TRACKER'} onClick={() => setActiveScreen('TRACKER')} label="Admin" />
             </>
           )}
@@ -702,7 +706,7 @@ export default function App() {
             <NavItem icon={<Layers size={24} />} active={activeScreen === 'FOUNDER_HUB'} onClick={() => setActiveScreen('FOUNDER_HUB')} label="Hub" />
           )}
           <NavItem icon={<Search size={24} />} active={activeScreen === 'DISCOVERY'} onClick={() => setActiveScreen('DISCOVERY')} label="Library" />
-          <NavItem icon={<Handshake size={24} />} active={activeScreen === 'NETWORK'} onClick={() => setActiveScreen('NETWORK')} label="Network" />
+          <NavItem icon={<Users size={24} />} active={activeScreen === 'NETWORK'} onClick={() => setActiveScreen('NETWORK')} label="Network" />
           <NavItem icon={<Bot size={24} />} active={activeScreen === 'AGENT'} onClick={() => setActiveScreen('AGENT')} label="Chat" />
         </div>
 
@@ -876,7 +880,7 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="max-w-7xl mx-auto space-y-12"
+              className="max-w-7xl mx-auto space-y-10 pb-20"
             >
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8">
                 <div>
@@ -906,117 +910,127 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                 <div className="lg:col-span-2 space-y-8">
-                    <h3 className="text-xs font-bold text-brand-dark/40 uppercase tracking-[0.2em] px-2 flex items-center gap-2">
-                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                       Global Linkage Ledger
-                    </h3>
-                    <div className="space-y-4">
-                       {[
-                         { sp: 'Scale-up Specialists', action: 'completed', target: 'AgroFlow Tech', time: '12m ago', type: 'IP Filings', category: 'SERVICE_PROVIDER' },
-                         { sp: 'Venture Capital X', action: 'vetted', target: 'Solaris energy', time: '28m ago', type: 'Series A Bridge', category: 'PARTNER' },
-                         { sp: 'Ops Architects', action: 'initiated', target: 'FinEdge Solutions', time: '45m ago', type: 'Cloud Migration', category: 'SERVICE_PROVIDER' },
-                         { sp: 'Global Logistics Hub', action: 'linked', target: 'GreenMart', time: '1h ago', type: 'Supply Chain Sync', category: 'PARTNER' },
-                         { sp: 'Legal Guardians', action: 'flagged', target: 'BioPulse', time: '2h ago', type: 'Compliance Review', status: 'CRITICAL', category: 'SERVICE_PROVIDER' },
-                         { sp: 'Cloud Infrastructure Ltd', action: 'provided', target: 'DataFlow', time: '4h ago', type: 'Instance Setup', category: 'PARTNER' },
-                         { sp: 'Growth Hackers', action: 'assigned', target: 'MarketMatrix', time: '5h ago', type: 'GTM Strategy', category: 'SERVICE_PROVIDER' }
-                       ].map((activity, i) => (
-                         <div key={i} className="group bg-white p-6 rounded-3xl border border-brand-bg flex items-center gap-6 hover:shadow-md transition-all">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                               activity.action === 'flagged' ? 'bg-red-50 text-red-600' :
-                               activity.category === 'PARTNER' ? 'bg-blue-50 text-blue-600' :
-                               'bg-brand-yellow/10 text-brand-yellow'
-                            }`}>
-                               {activity.action === 'flagged' ? <Shield size={24} /> : 
-                               activity.category === 'PARTNER' ? <Handshake size={24} /> :
-                               <Wrench size={24} />}
-                            </div>
-                            <div className="flex-1">
-                               <div className="flex justify-between items-start">
-                                  <div>
-                                     <div className="flex items-center gap-2 mb-1">
-                                        <p className="font-bold text-lg">{activity.sp}</p>
-                                        <Badge className={`${activity.category === 'PARTNER' ? 'bg-blue-500' : 'bg-brand-dark'} text-white text-[8px] px-2 py-0.5 rounded-full border-none`}>{activity.category.replace('_', ' ')}</Badge>
-                                     </div>
-                                     <p className="text-sm text-brand-dark/50">
-                                        {activity.action} <span className="text-brand-dark font-bold">{activity.type}</span> for {activity.target}
-                                     </p>
-                                  </div>
-                                  <span className="text-[10px] font-bold text-brand-dark/30 uppercase">{activity.time}</span>
-                               </div>
-                            </div>
-                            <Button variant="ghost" size="icon" className="rounded-xl hover:bg-brand-bg opacity-0 group-hover:opacity-100 transition-opacity">
-                               <ChevronRight size={18} />
-                            </Button>
-                         </div>
-                       ))}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Partner Box */}
+                <Card className="rounded-[2.5rem] border-none bg-white p-8 shadow-sm overflow-hidden">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                      <Handshake size={20} />
                     </div>
-
-                    <Card className="rounded-[2.5rem] border-none bg-brand-bg/50 p-10 flex flex-col md:flex-row items-center gap-8 border border-white">
-                       <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-sm">
-                          <Layers className="text-brand-yellow" size={32} />
-                       </div>
-                       <div className="flex-1 text-center md:text-left">
-                          <h4 className="text-xl font-bold mb-1 tracking-tight">Expand Service Fleet</h4>
-                          <p className="text-sm text-brand-dark/40 font-medium">Looking for specific expertise to match a high-priority cohort request?</p>
-                       </div>
-                       <Button className="rounded-2xl bg-brand-dark text-white text-[10px] uppercase font-bold tracking-widest h-12 px-8">Procure Providers</Button>
-                    </Card>
-                 </div>
-
-                 <div className="space-y-8">
-                    <h3 className="text-xs font-bold text-brand-dark/40 uppercase tracking-[0.2em] px-2 flex items-center gap-2">
-                       Active Node Status
-                    </h3>
-                    <div className="grid grid-cols-1 gap-6">
-                      {[...ecosystem.partners, ...ecosystem.serviceProviders].map(sp => (
-                        <Card key={sp.id} className="rounded-[2rem] border-none bg-white p-8 shadow-sm group hover:shadow-lg transition-all border border-transparent hover:border-brand-bg">
-                          <div className="flex justify-between items-start mb-6">
-                            <div className={`w-14 h-14 bg-brand-bg rounded-2xl flex items-center justify-center group-hover:bg-brand-dark group-hover:text-brand-yellow transition-colors ${sp.type === 'PARTNER' ? 'text-blue-500' : 'text-brand-dark'}`}>
-                              {sp.type === 'PARTNER' ? <Handshake size={24} /> : <Wrench size={24} />}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge className={`${sp.type === 'PARTNER' ? 'bg-blue-50 text-blue-600' : 'bg-brand-dark/10 text-brand-dark/60'} border-none text-[8px] uppercase font-black px-2 py-0.5 rounded-full`}>{sp.type}</Badge>
-                              <Badge className={`${sp.status === 'ACTIVE' ? 'bg-green-50 text-green-600' : 'bg-brand-dark/5 text-brand-dark/30'} border-none text-[9px] uppercase font-bold tracking-widest px-3 py-1 rounded-full`}>
-                                {sp.status}
-                              </Badge>
-                            </div>
-                          </div>
-                          
-                          <h3 className="text-2xl font-bold mb-1 tracking-tight">{sp.name}</h3>
-                          <div className="flex flex-wrap gap-2 mb-8">
-                             {sp.expertise?.map(exp => (
-                               <Badge key={exp} variant="outline" className="text-[9px] border-brand-dark/5 text-brand-dark/40 uppercase font-bold tracking-widest">
-                                  {exp}
-                               </Badge>
-                             ))}
-                          </div>
-
-                          <div className="space-y-4">
-                            {sp.activeWork && sp.activeWork.length > 0 ? (
-                              sp.activeWork.map((work, idx) => (
-                                <div key={idx} className="bg-brand-bg/50 rounded-2xl p-5 border border-brand-bg/50 group-hover:border-brand-yellow/30 transition-all">
-                                   <div className="flex justify-between items-start mb-3">
-                                      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-dark/40">Engagement</p>
-                                      <Badge className="bg-brand-yellow/20 text-brand-yellow border-none text-[8px] uppercase font-black px-2 py-0.5">{work.status}</Badge>
-                                   </div>
-                                   <p className="font-bold text-brand-dark mb-1">{work.client}</p>
-                                   <p className="text-[11px] text-brand-dark/50 leading-relaxed font-medium">{work.task}</p>
-                                </div>
-                              ))
-                            ) : (
-                              <div className="py-10 text-center bg-brand-bg/30 rounded-2xl border-2 border-dashed border-brand-dark/5">
-                                 <p className="text-xs text-brand-dark/30 font-bold uppercase tracking-widest">Available</p>
-                              </div>
-                            )}
-                          </div>
-
-                          <Button className="w-full mt-8 rounded-2xl bg-brand-bg text-brand-dark hover:bg-brand-dark hover:text-white transition-all font-bold text-[10px] uppercase tracking-widest h-12">Modify Scope</Button>
-                        </Card>
-                      ))}
+                    <div>
+                      <h3 className="text-lg font-bold tracking-tight">Partner Activity</h3>
+                      <p className="text-[10px] font-bold text-brand-dark/30 uppercase tracking-widest">Strategic partners</p>
                     </div>
-                 </div>
+                    <Badge className="ml-auto bg-blue-50 text-blue-600 border-none text-[9px] font-bold px-3 py-1 rounded-full">{ecosystem.partners.length} Partners</Badge>
+                  </div>
+
+                  <div className="space-y-3 mb-6">
+                    {[
+                      { sp: 'Venture Capital X', action: 'vetted', target: 'Solaris energy', time: '28m ago', type: 'Series A Bridge' },
+                      { sp: 'Global Logistics Hub', action: 'linked', target: 'GreenMart', time: '1h ago', type: 'Supply Chain Sync' },
+                      { sp: 'Cloud Infrastructure Ltd', action: 'provided', target: 'DataFlow', time: '4h ago', type: 'Instance Setup' },
+                    ].map((activity, i) => (
+                      <div key={i} className="group flex items-center gap-4 p-4 rounded-2xl bg-brand-bg/30 hover:bg-blue-50/50 transition-all">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50 text-blue-600 shrink-0">
+                          <Handshake size={16} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm truncate">{activity.sp}</p>
+                          <p className="text-[11px] text-brand-dark/50 truncate">
+                            {activity.action} <span className="font-bold text-brand-dark/70">{activity.type}</span> for {activity.target}
+                          </p>
+                        </div>
+                        <span className="text-[9px] font-bold text-brand-dark/30 uppercase shrink-0">{activity.time}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Separator className="bg-brand-dark/5 mb-6" />
+
+                  <h4 className="text-[10px] font-bold text-brand-dark/30 uppercase tracking-widest mb-4">Node Status</h4>
+                  <div className="space-y-3">
+                    {ecosystem.partners.map(sp => (
+                      <div key={sp.id} className="flex items-center gap-4 p-4 rounded-2xl bg-brand-bg/30">
+                        <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500 shrink-0">
+                          <Handshake size={16} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm truncate">{sp.name}</p>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {sp.expertise?.slice(0, 2).map(exp => (
+                              <span key={exp} className="text-[8px] font-bold text-brand-dark/30 uppercase">{exp}</span>
+                            ))}
+                          </div>
+                        </div>
+                        <Badge className={`${sp.status === 'ACTIVE' ? 'bg-green-50 text-green-600' : 'bg-brand-dark/5 text-brand-dark/30'} border-none text-[8px] uppercase font-bold px-2 py-0.5 rounded-full shrink-0`}>
+                          {sp.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+
+                {/* Service Provider Box */}
+                <Card className="rounded-[2.5rem] border-none bg-white p-8 shadow-sm overflow-hidden">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-brand-yellow/10 text-brand-yellow rounded-xl flex items-center justify-center">
+                      <Wrench size={20} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold tracking-tight">Service Provider Activity</h3>
+                      <p className="text-[10px] font-bold text-brand-dark/30 uppercase tracking-widest">Scaling specialists</p>
+                    </div>
+                    <Badge className="ml-auto bg-brand-yellow/10 text-brand-yellow border-none text-[9px] font-bold px-3 py-1 rounded-full">{ecosystem.serviceProviders.length} Providers</Badge>
+                  </div>
+
+                  <div className="space-y-3 mb-6">
+                    {[
+                      { sp: 'Scale-up Specialists', action: 'completed', target: 'AgroFlow Tech', time: '12m ago', type: 'IP Filings' },
+                      { sp: 'Ops Architects', action: 'initiated', target: 'FinEdge Solutions', time: '45m ago', type: 'Cloud Migration' },
+                      { sp: 'Legal Guardians', action: 'flagged', target: 'BioPulse', time: '2h ago', type: 'Compliance Review' },
+                      { sp: 'Growth Hackers', action: 'assigned', target: 'MarketMatrix', time: '5h ago', type: 'GTM Strategy' },
+                    ].map((activity, i) => (
+                      <div key={i} className="group flex items-center gap-4 p-4 rounded-2xl bg-brand-bg/30 hover:bg-brand-yellow/5 transition-all">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                          activity.action === 'flagged' ? 'bg-red-50 text-red-600' : 'bg-brand-yellow/10 text-brand-yellow'
+                        }`}>
+                          {activity.action === 'flagged' ? <Shield size={16} /> : <Wrench size={16} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm truncate">{activity.sp}</p>
+                          <p className="text-[11px] text-brand-dark/50 truncate">
+                            {activity.action} <span className="font-bold text-brand-dark/70">{activity.type}</span> for {activity.target}
+                          </p>
+                        </div>
+                        <span className="text-[9px] font-bold text-brand-dark/30 uppercase shrink-0">{activity.time}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Separator className="bg-brand-dark/5 mb-6" />
+
+                  <h4 className="text-[10px] font-bold text-brand-dark/30 uppercase tracking-widest mb-4">Node Status</h4>
+                  <div className="space-y-3">
+                    {ecosystem.serviceProviders.map(sp => (
+                      <div key={sp.id} className="flex items-center gap-4 p-4 rounded-2xl bg-brand-bg/30">
+                        <div className="w-10 h-10 bg-brand-bg rounded-xl flex items-center justify-center text-brand-dark shrink-0">
+                          <Wrench size={16} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm truncate">{sp.name}</p>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {sp.expertise?.slice(0, 2).map(exp => (
+                              <span key={exp} className="text-[8px] font-bold text-brand-dark/30 uppercase">{exp}</span>
+                            ))}
+                          </div>
+                        </div>
+                        <Badge className={`${sp.status === 'ACTIVE' ? 'bg-green-50 text-green-600' : 'bg-brand-dark/5 text-brand-dark/30'} border-none text-[8px] uppercase font-bold px-2 py-0.5 rounded-full shrink-0`}>
+                          {sp.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
               </div>
             </motion.div>
           )}
@@ -1184,8 +1198,7 @@ export default function App() {
                           <div className="mt-auto">
                             <Button 
                               onClick={() => p.status === 'REGISTERING' ? handleApplyNow(p.name) : null}
-                              variant="outline" 
-                              className="w-full rounded-xl border-[#141414]/10 text-xs font-mono uppercase tracking-widest text-[#141414]"
+                              className={`w-full rounded-xl text-xs font-mono uppercase tracking-widest ${p.status === 'REGISTERING' ? 'bg-brand-dark text-white hover:bg-brand-dark/90' : 'bg-brand-dark text-white hover:bg-brand-dark/90'}`}
                             >
                               {p.status === 'REGISTERING' ? 'Apply Now' : 'View Cohort'}
                             </Button>
@@ -1273,7 +1286,7 @@ export default function App() {
                           onClick={() => triggerAuditGeneration(insight.title)}
                           className="p-0 h-auto text-[10px] font-mono tracking-widest uppercase text-[#141414] group-hover:translate-x-1 transition-transform"
                         >
-                           VIEW FULL AUDIT <ChevronRight size={10} className="ml-1" />
+                           {insight.title === 'Mentor Performance' ? 'VIEW FULL MENTOR ANALYSIS' : 'VIEW FULL AUDIT'} <ChevronRight size={10} className="ml-1" />
                         </Button>
                      </div>
                    )) || (
@@ -1365,9 +1378,9 @@ export default function App() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0 }}
-              className="max-w-7xl mx-auto px-4"
+              className="max-w-7xl mx-auto px-4 pb-20"
             >
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-16">
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-16 sticky top-0 bg-brand-bg/95 backdrop-blur-sm z-10 py-6 -mt-6 -mx-4 px-4">
                 <div>
                   <h1 className="text-4xl font-bold tracking-tight mb-3 text-center lg:text-left">Ecosystem Directory</h1>
                   <p className="text-sm font-medium text-brand-dark opacity-40 text-center lg:text-left uppercase tracking-widest">A unified hub for verified ecosystem founders, mentors, and partners.</p>
@@ -1395,7 +1408,7 @@ export default function App() {
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
                exit={{ opacity: 0 }}
-               className="max-w-7xl mx-auto h-[calc(100vh-140px)] flex flex-col px-4 w-full"
+               className="max-w-7xl mx-auto min-h-[calc(100vh-140px)] flex flex-col px-4 w-full pb-10"
             >
                <div className="text-center mb-4 pt-2 flex flex-col items-center shrink-0">
                   <motion.div 
@@ -1430,7 +1443,7 @@ export default function App() {
                   </div>
                </div>
 
-               <div className="flex-1 bg-white rounded-[2.5rem] shadow-xl shadow-brand-dark/5 flex flex-col overflow-hidden mb-2 border border-brand-bg min-h-0">
+               <div className="flex-1 bg-white rounded-[2.5rem] shadow-xl shadow-brand-dark/5 flex flex-col overflow-y-auto mb-2 border border-brand-bg min-h-0">
                   <ScrollArea className="flex-1 scroll-smooth">
                     <div className="max-w-6xl mx-auto p-6 md:p-10">
                         {(() => {
@@ -1464,6 +1477,7 @@ export default function App() {
                               <motion.div 
                                 initial={{ opacity: 0, scale: 0.98 }}
                                 animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.98 }}
                                 className="flex flex-col items-center justify-center min-h-[400px] text-center px-4"
                               >
                                 <div className="w-20 h-20 bg-brand-bg rounded-[2rem] flex items-center justify-center text-brand-dark/20 mb-8 shadow-inner">

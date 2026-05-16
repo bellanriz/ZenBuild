@@ -125,10 +125,11 @@
     @apply border-border outline-ring/50;
     }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-brand-bg text-foreground;
     }
   html {
-    @apply font-sans;
+    @apply font-sans scroll-smooth;
+    scroll-behavior: smooth;
     }
 }
 
